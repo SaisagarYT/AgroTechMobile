@@ -1,5 +1,6 @@
 const User = require('../models/user.models');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 async function showUserDetails(req,res) {
     try{
@@ -20,7 +21,7 @@ async function saveUserDetails(req, res) {
     if(!username || !email || !password){
         return res.status(404).json({message:"Insufficient user credentials"});
     }
-    if(!file){
+    if(!imageFile){
         return res.status(404).json({message:"image was not recieved"});
     }
     try{
@@ -86,7 +87,7 @@ async function updateUserDetails(req,res) {
         if(pincode) user.pincode = pincode;
 
         if(password){
-            user.password = password
+            user.password = await bcrypt.hash(password,10);
         }
 
         await user.save();
@@ -125,6 +126,35 @@ async function deleteUserDetails(req,res) {
             }
         });
     }
-} 
+}
 
-module.exports = {saveUserDetails,showUserDetails,updateUserDetails,deleteUserDetails};
+async function signinUserDetails(req,res) {
+    const {email,password} = req.body;
+    if(!email || !password){
+        return res.status(404).json({message:"Proper credentials are not found!"});
+    }
+    try{
+        const user = await User.findOne({email:email});
+        if(!user){
+            return res.status(401).json({error:'Authentication failed1'});
+        }
+        const passwordMatch = await bcrypt.compare(password,user.password);
+        if(!passwordMatch) return res.status(401).json({error: 'Authentication failed2'});
+    
+        const token = jwt.sign({userId:user._id},process.env.SECRET_KEY,{
+            expiresIn:'1d',
+        });
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:false,
+            sameSite:"strict",
+            maxAge:24*60*60*1000
+        });
+        return res.status(200).json({message:"Login Successfully"});
+    }
+    catch(err){
+        return res.status(500).json({error:err.message});
+    }
+}
+
+module.exports = {saveUserDetails,showUserDetails,updateUserDetails,deleteUserDetails,signinUserDetails};

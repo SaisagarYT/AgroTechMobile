@@ -157,4 +157,10 @@ async function signinUserDetails(req,res) {
     }
 }
 
-module.exports = {saveUserDetails,showUserDetails,updateUserDetails,deleteUserDetails,signinUserDetails};
+module.exports = {
+    saveUserDetails,
+    showUserDetails,
+    updateUserDetails,
+    deleteUserDetails,
+    signinUserDetails
+};

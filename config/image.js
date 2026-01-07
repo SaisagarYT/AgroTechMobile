@@ -6,9 +6,9 @@ const storage = multer.diskStorage({
         cb(null, uniqueName+file.originalname);
     },
     destination:(req,file,cb) =>{
-        cb(null,'public/assets')
+        cb(null,'public/assets');
     }
-})
+});
 
 const upload = multer({storage:storage})
 

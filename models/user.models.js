@@ -36,6 +36,12 @@ const userSchema = mongoose.Schema({
     pincode:{
         type:Number,
         required:true,
+    },
+    role:{
+        type:String,
+        required:true,
+        enum:["Farmer","Student","Admin"],
+        default:"Farmer"
     }
 });
 

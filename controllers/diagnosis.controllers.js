@@ -1,3 +1,4 @@
+const generateChat = require('../aiServices/deepseek.services');
 const {generateText, imageToTextGeneration} = require('../aiServices/gemini.services');
 const diagnosis = require('../models/diagnosis.models');
 const fs = require('fs');
@@ -60,4 +61,26 @@ const TextFromImageGenerator = async(req,res) =>{
     }
 }
 
-module.exports = {contentGeneration,TextFromImageGenerator};
+const chatwithDeepseek = async(req,res) =>{
+    try{
+        const response = await generateChat();
+        if(!response){
+            return res.status(400).json({
+                success:false,
+                error:"No data was found"
+            })
+        }
+        return res.status(200).json({
+            success:true,
+            message:response
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            error:err.message
+        })
+    }
+}
+
+module.exports = {contentGeneration,TextFromImageGenerator,chatwithDeepseek};

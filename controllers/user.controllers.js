@@ -33,7 +33,6 @@ async function saveUserDetails(req, res) {
         }
         const hashedPassword = await bcrypt.hash(password,10);
         console.log(hashedPassword);
-
         const Users = new User({
             profile:imageUrl,
             username:username,

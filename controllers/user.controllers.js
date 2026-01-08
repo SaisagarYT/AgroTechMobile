@@ -24,6 +24,8 @@ async function saveUserDetails(req, res) {
     if(!imageFile){
         return res.status(404).json({message:"image was not recieved"});
     }
+    // const imageUrl = `${req.protocol}://${req.get("host")}/assets/${image.filename}`;
+    const imageUrl = `${req.protocol}://${req.get("host")}/assets/${imageFile.filename}`;
     try{
         const isExist = await User.findOne({email:email});
         if(isExist){
@@ -33,7 +35,7 @@ async function saveUserDetails(req, res) {
         console.log(hashedPassword);
 
         const Users = new User({
-            profile:imageFile.path,
+            profile:imageUrl,
             username:username,
             email:email,
             phone:phone,

@@ -8,6 +8,11 @@ const diagnosisSchema = new mongoose.Schema(
       required: true,
     },
 
+    diseaseName:{
+      type:String,
+      required:true,
+    },
+    
     cropName: {
       type: String,
       required: true,

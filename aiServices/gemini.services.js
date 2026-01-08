@@ -4,13 +4,32 @@ require('dotenv').config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
 
-async function generateText(prompt) {
+async function generateText(userInput,userId) {
+  const prompt = `
+        You are a professoinal and experienced crop doctor and i want you to analyze the context provided to give accurate an accurate results in json fromat without any markdown and extra words just clean json format.
+
+        Context:${userInput}
+
+        return {
+        "user": "${userId}",
+        "diseaseName":"string",
+        "cropName": "string",
+        "imageUrl": "",
+        "symptomsText": "string",
+        "detectedDisease": "string",
+        "severity": "LOW | MEDIUM | HIGH",
+        "aiConfidence": number,
+        "treatmentSummary": "string",
+        "sourceReference": "string"
+        }
+    `
   const response = await ai.models.generateContent({
+    response_mime_type:"application/json",
     model: "gemini-2.5-flash",
     contents: prompt,
   });
   console.log(response.text);
-  return response.text.toString();
+  return JSON.parse(response.text);
 }
 
 async function imageToTextGeneration(imageBuffer,mimeType,userId){

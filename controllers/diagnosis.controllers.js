@@ -5,18 +5,34 @@ const path = require('path');
 
 const contentGeneration = async(req,res) =>{
     const {prompt} = req.body;
+    const userId = req.params.userId;
+    if(!userId){
+        return res.status(400).json({
+            success:true,
+            error:"user id not found"
+        });
+    }
     if(!prompt){
         return res.status(404).json({message:"Attribute not found!"});
     }
+    const userInput = prompt;
     try{
-        const response = await generateText(prompt);
+        const response = await generateText(userInput,userId);
         if(!response){
             return res.status(400).json({message:"No response was found"});
         }
-        return res.status(200).json({message:response})
+        const promptData = new diagnosis(response);
+        await promptData.save();
+        return res.status(200).json({
+            success:true,
+            message:response
+        })
     }
     catch(err){
-        return res.status(500).json({Error:err});
+        return res.status(500).json({
+            success:false,
+            Error:err.message
+        });
     }
 }
 
@@ -37,7 +53,7 @@ const TextFromImageGenerator = async(req,res) =>{
         response.imageUrl = imageUrl;
         const cropData = new diagnosis(response);
         await cropData.save();
-        return res.status(200).json({message:response})
+        return res.status(200).json({message:response._id})
     }
     catch(err){
         return res.status(500).json({ERROR:err.message}); 

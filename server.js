@@ -13,7 +13,8 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-app.use('/assets',express.static('public/assets'))
+app.use('/assets',express.static('public/assets'));
+app.use('/audio',express.static('public/audio'));
 
 app.use('/api/user',userRoutes);
 app.use('/api/v1',otpRoutes);

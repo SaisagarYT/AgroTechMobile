@@ -84,17 +84,19 @@ async function voiceToTextQuery(filename,userId) {
     process the audio file and generate the answer to user query in detailed json format without any markdown like eg, \`\`\`.
 
     {
-        user: ${userId},
-    
-        audioUrl: String,
-    
-        transcribedText: String // put the ai resonse for the user query here and return,
-    
-        intentDetected: {
-          type: String,
-          enum: ["DISEASE", "SCHEME", "MARKET", "GENERAL"],
-        },
-      },
+      "user": "${userId}",
+  
+      "audioUrl": "String",
+  
+      "userQuery":"String",
+
+      "response": "String",
+
+      "intentDetected": {
+        type: String,
+        enum: ["DISEASE", "SCHEME", "MARKET", "GENERAL"],
+      }
+    },
   `
 
   const myfile = await ai.files.upload({
